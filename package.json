@@ -1,0 +1,13 @@
+{
+  "name": "weather-air",
+  "version": "1.0.0",
+  "description": "강수확률·대기오염 예보 텔레그램 알림",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5"
+  }
+}

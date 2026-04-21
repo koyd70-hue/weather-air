@@ -1,0 +1,5 @@
+.env
+node_modules/
+.sent_log.json
+.lock_*
+.vercel
