@@ -1,0 +1,49 @@
+require('dotenv').config();
+const { getAllPOPRegions, getDateStr } = require('../src/weather');
+const { fetchDust } = require('../src/airQuality');
+const { sendMessage } = require('../src/telegram');
+
+function formatDisplayDate(yyyymmdd) {
+  return `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}`;
+}
+
+async function checkTomorrow() {
+  const tomorrowStr = getDateStr(1);
+  const tomorrowDash = formatDisplayDate(tomorrowStr);
+
+  const [allRegions, dustResult] = await Promise.all([
+    getAllPOPRegions(['1700', '1400', '1100'], tomorrowStr),
+    fetchDust(tomorrowDash),
+  ]);
+
+  const lines = [`[내일 날씨·대기 예보] ${tomorrowDash}`, ''];
+
+  for (const { regionName, maxPOP } of allRegions) {
+    lines.push(`📍 ${regionName}`);
+    lines.push(`🌧 강수확률: ${maxPOP}%`);
+    lines.push('');
+  }
+
+  lines.push(
+    dustResult
+      ? `🌫 미세먼지(PM10): ${dustResult.grade} (${dustResult.region})`
+      : `🌫 미세먼지(PM10): 조회 실패`
+  );
+
+  await sendMessage(lines.join('\n').trim());
+}
+
+module.exports = async function handler(req, res) {
+  const authHeader = req.headers.authorization;
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    await checkTomorrow();
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};

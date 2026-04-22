@@ -3,6 +3,10 @@
     {
       "path": "/api/check",
       "schedule": "0 23 * * *"
+    },
+    {
+      "path": "/api/check-tomorrow",
+      "schedule": "0 10 * * *"
     }
   ]
 }

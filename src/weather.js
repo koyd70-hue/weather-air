@@ -6,13 +6,13 @@ const REGIONS = {
   '안성시': { nx: 76, ny: 107 },
 };
 
-// offsetDays 후 날짜를 YYYYMMDD 형식으로 반환
+// offsetDays 후 날짜를 YYYYMMDD 형식으로 반환 (KST 기준)
 function getDateStr(offsetDays = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
+  const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  kst.setUTCDate(kst.getUTCDate() + offsetDays);
+  const yyyy = kst.getUTCFullYear();
+  const mm = String(kst.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(kst.getUTCDate()).padStart(2, '0');
   return `${yyyy}${mm}${dd}`;
 }
 
