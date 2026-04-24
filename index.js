@@ -10,7 +10,7 @@ function formatDisplayDate(yyyymmdd) {
 async function checkToday() {
   const todayStr = getDateStr(0);
   const [allRegions, dustResult] = await Promise.all([
-    getAllPOPRegions('0500', todayStr),
+    getAllPOPRegions(['0500', '0200'], todayStr),
     fetchDust(),
   ]);
 
@@ -31,29 +31,4 @@ async function checkToday() {
   await sendMessage(lines.join('\n').trim());
 }
 
-async function checkTomorrow() {
-  const tomorrowStr = getDateStr(1);
-  const tomorrowDash = formatDisplayDate(tomorrowStr);
-  const [allRegions, dustResult] = await Promise.all([
-    getAllPOPRegions(['1700', '1400', '1100'], tomorrowStr),
-    fetchDust(tomorrowDash),
-  ]);
-
-  const lines = [`[내일 날씨·대기 예보] ${tomorrowDash}`, ''];
-
-  for (const { regionName, maxPOP } of allRegions) {
-    lines.push(`📍 ${regionName}`);
-    lines.push(`🌧 강수확률: ${maxPOP}%`);
-    lines.push('');
-  }
-
-  lines.push(
-    dustResult
-      ? `🌫 미세먼지(PM10): ${dustResult.grade} (${dustResult.region})`
-      : `🌫 미세먼지(PM10): 조회 실패`
-  );
-
-  await sendMessage(lines.join('\n').trim());
-}
-
-module.exports = { check: checkToday, checkToday, checkTomorrow };
+module.exports = { check: checkToday, checkToday };
