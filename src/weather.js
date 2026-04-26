@@ -38,9 +38,10 @@ async function fetchPOP(regionName, baseTime, fcstDate) {
 
   try {
     const res = await axios.get(url, { params });
-    const items = res.data?.response?.body?.items?.item;
+    const raw = res.data?.response?.body?.items?.item;
+    const items = Array.isArray(raw) ? raw : raw ? [raw] : [];
 
-    if (!items || !Array.isArray(items)) {
+    if (items.length === 0) {
       console.error(`[weather] ${regionName}: 응답 데이터 없음`);
       return null;
     }

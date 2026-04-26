@@ -16,10 +16,15 @@ async function checkToday() {
 
   const lines = [`[오늘 날씨·대기 알림] ${formatDisplayDate(todayStr)}`, ''];
 
-  for (const { regionName, maxPOP } of allRegions) {
-    lines.push(`📍 ${regionName}`);
-    lines.push(`🌧 강수확률: ${maxPOP}%`);
+  if (allRegions.length === 0) {
+    lines.push('🌧 날씨 정보 조회 실패');
     lines.push('');
+  } else {
+    for (const { regionName, maxPOP } of allRegions) {
+      lines.push(`📍 ${regionName}`);
+      lines.push(`🌧 강수확률: ${maxPOP}%`);
+      lines.push('');
+    }
   }
 
   lines.push(
