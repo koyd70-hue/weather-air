@@ -10,7 +10,7 @@ function formatDisplayDate(yyyymmdd) {
 async function checkToday() {
   const todayStr = getDateStr(0);
   const [allRegions, dustResult] = await Promise.all([
-    getAllPOPRegions(['0500', '0200'], todayStr),
+    getAllPOPRegions(['0200', '0500'], todayStr),
     fetchDust(),
   ]);
 
